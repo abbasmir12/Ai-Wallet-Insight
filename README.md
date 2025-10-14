@@ -1,4 +1,4 @@
-<![Alt](public/logo-ng.png)>
+![Alt](public/logo-ng.png)
 
 # AI Wallet Insight
 
