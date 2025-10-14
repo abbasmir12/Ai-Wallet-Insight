@@ -302,28 +302,6 @@ The interface prioritizes clarity and accessibility while maintaining a professi
 **Typography**: Professional Inter font family for optimal readability
 **Animations**: Smooth Framer Motion animations provide visual feedback without distraction
 
-## Deployment
-
-### Vercel (Recommended)
-
-1. Push your code to a GitHub repository
-2. Connect the repository to [Vercel](https://vercel.com)
-3. Configure environment variables in the Vercel dashboard:
-   - `HUGGINGFACE_API_KEY`: Your Hugging Face API token
-4. Deploy the application
-
-### Alternative Deployment Options
-
-**Netlify**:
-1. Build the project: `npm run build`
-2. Deploy the generated files to Netlify
-3. Configure environment variables in Netlify dashboard
-
-**Self-hosted**:
-1. Build the project: `npm run build`
-2. Start the production server: `npm start`
-3. Configure environment variables on your server
-
 ## API Endpoints
 
 ### POST `/api/wallet`
