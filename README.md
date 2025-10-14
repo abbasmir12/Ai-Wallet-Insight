@@ -179,8 +179,8 @@ At the heart of our system is an innovative JSON-based protocol that enables AI 
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
-   cd ai-wallet-insights
+   git clone https://github.com/abbasmir12/Ai-Wallet-Insight
+   cd Ai-Wallet-Insight
    ```
 
 2. **Install dependencies**
