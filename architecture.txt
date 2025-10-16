@@ -1,0 +1,345 @@
+AI WALLET INSIGHTS - COMPLETE SYSTEM ARCHITECTURE
+=====================================================
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                                   USER INTERFACE                                    │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐ │
+│  │   WalletInput   │  │  WalletSummary  │  │ ChatInterface   │  │   GraphDemo     │ │
+│  │   Component     │  │   Component     │  │   Component     │  │   Component     │ │
+│  │                 │  │                 │  │                 │  │                 │ │
+│  │ • Address Input │  │ • Balance Info  │  │ • AI Chat       │  │ • Graph Panel   │ │
+│  │ • Validation    │  │ • TX History    │  │ • Agent Toggle  │  │ • Examples      │ │
+│  │ • Submit        │  │ • AI Summary    │  │ • Graph Display │  │ • Tutorials     │ │
+│  └─────────────────┘  └─────────────────┘  └─────────────────┘  └─────────────────┘ │
+│                                      │                                              │
+│                                      ▼                                              │
+│  ┌─────────────────────────────────────────────────────────────────────────────────┐ │
+│  │                        GraphRenderer Component                                  │ │
+│  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐      │ │
+│  │  │   VBC   │ │   HBC   │ │   PG    │ │   LC    │ │   AC    │ │   DG    │      │ │
+│  │  │ Vertical│ │Horizontal│ │  Pie    │ │  Line   │ │  Area   │ │ Donut   │      │ │
+│  │  │   Bar   │ │   Bar   │ │ Chart   │ │ Chart   │ │ Chart   │ │ Chart   │      │ │
+│  │  └─────────┘ └─────────┘ └─────────┘ └─────────┘ └─────────┘ └─────────┘      │ │
+│  └─────────────────────────────────────────────────────────────────────────────────┘ │
+│                                      │                                              │
+│                                      ▼                                              │
+│  ┌─────────────────────────────────────────────────────────────────────────────────┐ │
+│  │                    ExpandedGraphViewer Component                                │ │
+│  │                    • Full-screen modal view                                    │ │
+│  │                    • Enhanced interactions                                     │ │
+│  │                    • Download & share features                                 │ │
+│  └─────────────────────────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+                                      │
+                                      ▼
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                                 API LAYER                                          │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                     │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────────────────────────┐  │
+│  │  /api/wallet    │  │   /api/chat     │  │    /api/preload-transactions        │  │
+│  │                 │  │                 │  │                                     │  │
+│  │ • Fetch wallet  │  │ • Process chat  │  │ • Background data loading           │  │
+│  │   data          │  │   messages      │  │ • Transaction aggregation           │  │
+│  │ • Generate AI   │  │ • Agent routing │  │ • Cache management                  │  │
+│  │   summary       │  │ • Graph protocol│  │ • Performance optimization          │  │
+│  │ • Return wallet │  │   parsing       │  │                                     │  │
+│  │   analytics     │  │ • Response gen  │  │                                     │  │
+│  └─────────────────┘  └─────────────────┘  └─────────────────────────────────────┘  │
+│           │                     │                            │                      │
+└───────────┼─────────────────────┼────────────────────────────┼──────────────────────┘
+            │                     │                            │
+            ▼                     ▼                            ▼
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                              CORE SERVICES                                         │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                     │
+│  ┌─────────────────────────────────────────────────────────────────────────────────┐ │
+│  │                           AI SERVICE (ai-service.ts)                           │ │
+│  │                                                                                 │ │
+│  │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────────────────────┐ │ │
+│  │  │  Regular Mode   │  │   Agent Mode    │  │        Pro Agent Mode           │ │ │
+│  │  │                 │  │                 │  │                                 │ │ │
+│  │  │ • Instant resp  │  │ • Targeted API  │  │ • Complex analysis              │ │ │
+│  │  │ • Loaded data   │  │ • Specific data │  │ • Custom JS execution           │ │ │
+│  │  │ • Basic queries │  │ • Smart routing │  │ • Thousands of transactions     │ │ │
+│  │  │                 │  │                 │  │ • Self-healing mechanism        │ │ │
+│  │  └─────────────────┘  └─────────────────┘  └─────────────────────────────────┘ │ │
+│  │                                                                                 │ │
+│  │  ┌─────────────────────────────────────────────────────────────────────────────┐ │ │
+│  │  │                      Agent Protocol Parser                                  │ │ │
+│  │  │                                                                             │ │ │
+│  │  │  {                                                                          │ │ │
+│  │  │    "action": "use_agent",                                                   │ │ │
+│  │  │    "uri": "https://api.testnet.hiro.so/extended/v1/address/...",           │ │ │
+│  │  │    "uri_data": null,                                                        │ │ │
+│  │  │    "recursive": true,                                                       │ │ │
+│  │  │    "code": "/* Custom JavaScript analysis code */"                         │ │ │
+│  │  │  }                                                                          │ │ │
+│  │  └─────────────────────────────────────────────────────────────────────────────┘ │ │
+│  │                                                                                 │ │
+│  │  ┌─────────────────────────────────────────────────────────────────────────────┐ │ │
+│  │  │                      Graph Protocol Generator                               │ │ │
+│  │  │                                                                             │ │ │
+│  │  │  {                                                                          │ │ │
+│  │  │    "graph": "VBC",                                                          │ │ │
+│  │  │    "x_axis_data": ["Jan", "Feb", "Mar"],                                   │ │ │
+│  │  │    "y_axis_data": [150, 230, 180],                                         │ │ │
+│  │  │    "title": "Monthly Activity",                                             │ │ │
+│  │  │    "value_label": "Transactions",                                           │ │ │
+│  │  │    "colors": ["#3b82f6", "#8b5cf6"],                                       │ │ │
+│  │  │    "tooltip_data": { /* Rich interactive data */ }                         │ │ │
+│  │  │  }                                                                          │ │ │
+│  │  └─────────────────────────────────────────────────────────────────────────────┘ │ │
+│  └─────────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                     │
+│  ┌─────────────────────────────────────────────────────────────────────────────────┐ │
+│  │                      STACKS API SERVICE (stacks-api.ts)                        │ │
+│  │                                                                                 │ │
+│  │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────────────────────┐ │ │
+│  │  │ Wallet Data     │  │ Transaction     │  │    Background Processing        │ │ │
+│  │  │ Fetching        │  │ Processing      │  │                                 │ │ │
+│  │  │                 │  │                 │  │ • Preload all transactions      │ │ │
+│  │  │ • Balance info  │  │ • TX analysis   │  │ • Intelligent caching           │ │ │
+│  │  │ • Recent TXs    │  │ • Aggregation   │  │ • Conflict prevention           │ │ │
+│  │  │ • Account data  │  │ • Validation    │  │ • Performance optimization      │ │ │
+│  │  └─────────────────┘  └─────────────────┘  └─────────────────────────────────┘ │ │
+│  └─────────────────────────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+                                      │
+                                      ▼
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                            EXTERNAL INTEGRATIONS                                   │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                     │
+│  ┌─────────────────────────────────┐  ┌─────────────────────────────────────────┐  │
+│  │        Hugging Face API         │  │           Stacks Testnet API            │  │
+│  │                                 │  │                                         │  │
+│  │ • Multiple AI models            │  │ • Real-time blockchain data             │  │
+│  │ • openai/gpt-oss-120b (default)│  │ • Transaction history                   │  │
+│  │ • Custom model support          │  │ • Account information                   │  │
+│  │ • Configurable endpoints        │  │ • Smart contract interactions           │  │
+│  │ • User API key support          │  │ • Balance and activity data             │  │
+│  │                                 │  │                                         │  │
+│  │ ┌─────────────────────────────┐ │  │ ┌─────────────────────────────────────┐ │  │
+│  │ │    Specialized Prompts      │ │  │ │        API Endpoints Used           │ │  │
+│  │ │                             │ │  │ │                                     │ │  │
+│  │ │ • Blockchain analysis       │ │  │ │ • /extended/v1/address/{addr}       │ │  │
+│  │ │ • Graph generation          │ │  │ │ • /extended/v1/address/{addr}/      │ │  │
+│  │ │ • Agent protocol parsing    │ │  │ │   transactions                      │ │  │
+│  │ │ • Context management        │ │  │ │ • /extended/v1/address/{addr}/      │ │  │
+│  │ │ • Error correction          │ │  │ │   balances                          │ │  │
+│  │ └─────────────────────────────┘ │  │ └─────────────────────────────────────┘ │  │
+│  └─────────────────────────────────┘  └─────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+                                      │
+                                      ▼
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                              DATA FLOW & CACHING                                   │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                     │
+│  ┌─────────────────────────────────────────────────────────────────────────────────┐ │
+│  │                           File System Caching                                  │ │
+│  │                                                                                 │ │
+│  │  aggregated_transactions.json ◄─── Pro Agent Mode Data Storage                 │ │
+│  │                                                                                 │ │
+│  │  • Complete transaction history for analyzed wallets                           │ │
+│  │  • Metadata tracking (timestamps, processing status)                           │ │
+│  │  • Intelligent cache invalidation                                              │ │
+│  │  • Background refresh for frequently accessed wallets                          │ │
+│  └─────────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                     │
+│  ┌─────────────────────────────────────────────────────────────────────────────────┐ │
+│  │                            Memory Management                                    │ │
+│  │                                                                                 │ │
+│  │  • React state management with hooks                                           │ │
+│  │  • Context API for global wallet data                                          │ │
+│  │  • Local storage for user preferences                                          │ │
+│  │  • Conversation history persistence                                            │ │
+│  │  • Graph protocol caching                                                      │ │
+│  └─────────────────────────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+DATA FLOW SEQUENCE DIAGRAM
+===========================
+
+User Input → Wallet Analysis Flow:
+┌─────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│User │    │WalletInput  │    │/api/wallet  │    │stacks-api.ts│    │ai-service.ts│
+└──┬──┘    └──────┬──────┘    └──────┬──────┘    └──────┬──────┘    └──────┬──────┘
+   │              │                  │                  │                  │
+   │ Enter Address│                  │                  │                  │
+   ├─────────────►│                  │                  │                  │
+   │              │ POST /api/wallet │                  │                  │
+   │              ├─────────────────►│                  │                  │
+   │              │                  │ Fetch wallet data│                  │
+   │              │                  ├─────────────────►│                  │
+   │              │                  │                  │ Generate summary │
+   │              │                  │                  ├─────────────────►│
+   │              │                  │                  │◄─────────────────┤
+   │              │                  │◄─────────────────┤                  │
+   │              │◄─────────────────┤                  │                  │
+   │◄─────────────┤                  │                  │                  │
+   │              │                  │                  │                  │
+
+User Chat → AI Analysis Flow:
+┌─────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│User │    │ChatInterface│    │/api/chat    │    │ai-service.ts│    │GraphRenderer│
+└──┬──┘    └──────┬──────┘    └──────┬──────┘    └──────┬──────┘    └──────┬──────┘
+   │              │                  │                  │                  │
+   │ Ask Question │                  │                  │                  │
+   ├─────────────►│                  │                  │                  │
+   │              │ POST /api/chat   │                  │                  │
+   │              ├─────────────────►│                  │                  │
+   │              │                  │ Process query    │                  │
+   │              │                  ├─────────────────►│                  │
+   │              │                  │                  │                  │
+   │              │                  │ ┌─────────────────────────────────┐ │
+   │              │                  │ │    Agent Mode Decision Tree     │ │
+   │              │                  │ │                                 │ │
+   │              │                  │ │ Simple Query → Regular Mode     │ │
+   │              │                  │ │ Specific Data → Agent Mode      │ │
+   │              │                  │ │ Complex Analysis → Pro Agent    │ │
+   │              │                  │ │ Visual Request → Graph Protocol │ │
+   │              │                  │ └─────────────────────────────────┘ │
+   │              │                  │                  │                  │
+   │              │                  │ Response + Graph │                  │
+   │              │                  │◄─────────────────┤                  │
+   │              │◄─────────────────┤                  │                  │
+   │              │ Render Graph     │                  │                  │
+   │              ├─────────────────────────────────────────────────────────►│
+   │◄─────────────┤                  │                  │                  │
+
+AGENT MODE DECISION MATRIX
+==========================
+
+┌─────────────────┬─────────────────┬─────────────────┬─────────────────────┐
+│   Query Type    │   Data Needed   │   Agent Mode    │    Response Time    │
+├─────────────────┼─────────────────┼─────────────────┼─────────────────────┤
+│ "What's balance"│ Loaded data     │ Regular Mode    │ < 1 second          │
+│ "TX count"      │ Basic info      │ Regular Mode    │ < 1 second          │
+│ "Last TX"       │ Recent data     │ Regular Mode    │ < 1 second          │
+├─────────────────┼─────────────────┼─────────────────┼─────────────────────┤
+│ "TX #500"       │ Specific TX     │ Agent Mode      │ 2-3 seconds         │
+│ "March 15 data" │ Date range      │ Agent Mode      │ 2-3 seconds         │
+│ "Contract calls"│ Filtered data   │ Agent Mode      │ 2-3 seconds         │
+├─────────────────┼─────────────────┼─────────────────┼─────────────────────┤
+│ "Top recipients"│ All TX analysis │ Pro Agent Mode  │ 3-5 seconds         │
+│ "Spending patterns"│ Complex calc │ Pro Agent Mode  │ 3-5 seconds         │
+│ "Unique addresses"│ Full dataset  │ Pro Agent Mode  │ 3-5 seconds         │
+├─────────────────┼─────────────────┼─────────────────┼─────────────────────┤
+│ "Show chart"    │ Visual data     │ Graph Protocol  │ 4-6 seconds         │
+│ "Monthly graph" │ Aggregated data │ Graph Protocol  │ 4-6 seconds         │
+│ "Pie chart"     │ Distribution    │ Graph Protocol  │ 4-6 seconds         │
+└─────────────────┴─────────────────┴─────────────────┴─────────────────────┘
+
+GRAPH PROTOCOL WORKFLOW
+=======================
+
+Natural Language Request → Graph Generation:
+
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│ "Show monthly   │    │ AI analyzes     │    │ Pro Agent Mode  │    │ Graph Protocol  │
+│ activity chart" │───►│ request type    │───►│ fetches data    │───►│ JSON generated  │
+└─────────────────┘    └─────────────────┘    └─────────────────┘    └─────────────────┘
+                                │                        │                        │
+                                ▼                        ▼                        ▼
+                       ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+                       │ Determines:     │    │ Executes:       │    │ Contains:       │
+                       │ • Chart type    │    │ • Custom JS     │    │ • Chart spec    │
+                       │ • Data needs    │    │ • Data aggreg.  │    │ • Interactive   │
+                       │ • Time range    │    │ • Processing    │    │ • Styling       │
+                       └─────────────────┘    └─────────────────┘    └─────────────────┘
+                                                                              │
+                                                                              ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│ User interacts  │◄───│ Interactive     │◄───│ GraphRenderer   │◄───│ Frontend        │
+│ with chart      │    │ features active │    │ creates SVG     │    │ receives JSON   │
+└─────────────────┘    └─────────────────┘    └─────────────────┘    └─────────────────┘
+
+PERFORMANCE OPTIMIZATION LAYERS
+===============================
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                              CACHING STRATEGY                                      │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                     │
+│  Level 1: Browser Cache                                                             │
+│  ┌─────────────────────────────────────────────────────────────────────────────────┐ │
+│  │ • Local Storage: User preferences, conversation history                         │ │
+│  │ • Session Storage: Temporary wallet data, UI state                             │ │
+│  │ • Memory Cache: React state, component cache                                   │ │
+│  └─────────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                     │
+│  Level 2: Application Cache                                                         │
+│  ┌─────────────────────────────────────────────────────────────────────────────────┐ │
+│  │ • API Response Cache: Wallet data, transaction lists                           │ │
+│  │ • Graph Protocol Cache: Generated visualizations                               │ │
+│  │ • AI Response Cache: Conversation context, prompt results                      │ │
+│  └─────────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                     │
+│  Level 3: File System Cache                                                        │
+│  ┌─────────────────────────────────────────────────────────────────────────────────┐ │
+│  │ • aggregated_transactions.json: Complete transaction datasets                  │ │
+│  │ • Metadata files: Processing status, timestamps                                │ │
+│  │ • Background processing: Preloaded data for instant access                     │ │
+│  └─────────────────────────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+ERROR HANDLING & RECOVERY SYSTEM
+=================================
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                           SELF-HEALING AI MECHANISM                                │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                     │
+│  Code Execution Error → AI Correction Loop:                                        │
+│                                                                                     │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐         │
+│  │ Execute JS  │───►│ Error       │───►│ Send error  │───►│ AI generates│         │
+│  │ code        │    │ detected    │    │ to AI       │    │ fixed code  │         │
+│  └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘         │
+│         ▲                                                          │               │
+│         │                                                          ▼               │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐         │
+│  │ Success!    │◄───│ Retry count │◄───│ Validate    │◄───│ Execute     │         │
+│  │ Return      │    │ < 10?       │    │ new code    │    │ fixed code  │         │
+│  │ result      │    │             │    │             │    │             │         │
+│  └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘         │
+│                             │                                                      │
+│                             ▼ (if retry > 10)                                     │
+│                      ┌─────────────┐                                              │
+│                      │ Graceful    │                                              │
+│                      │ fallback    │                                              │
+│                      │ response    │                                              │
+│                      └─────────────┘                                              │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+SECURITY & VALIDATION LAYERS
+============================
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                              INPUT VALIDATION                                      │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                     │
+│  Frontend Validation:                                                               │
+│  • Stacks address format validation                                                 │
+│  • Input sanitization and XSS prevention                                           │
+│  • Rate limiting for API calls                                                     │
+│                                                                                     │
+│  Backend Validation:                                                                │
+│  • API key validation and secure storage                                           │
+│  • Request payload validation                                                      │
+│  • Blockchain data verification                                                    │
+│                                                                                     │
+│  Code Execution Security:                                                           │
+│  • Sandboxed JavaScript execution                                                  │
+│  • File system access restrictions                                                 │
+│  • Resource usage monitoring                                                       │
+│  • Timeout protection for long-running operations                                  │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+This architecture demonstrates the complete system flow from user interaction through 
+AI processing to blockchain data analysis and visualization generation, showcasing the 
+innovative three-tier agent system and breakthrough Graph Protocol technology.
