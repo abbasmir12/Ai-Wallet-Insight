@@ -340,6 +340,8 @@ Seamless integration between:
 **Caching System**: File-based caching with metadata tracking
 **State Management**: React hooks with conversation persistence
 
+**Complete system architecture diagrams and technical flows available in [architecture.txt](architecture.txt)**
+
 ## Quick Start
 
 ### Prerequisites
