@@ -89,9 +89,29 @@ export interface WalletData {
   totalTransactions?: number
 }
 
+export interface GraphData {
+  graph: string
+  x_axis_data: string[]
+  y_axis_data: number[]
+  title: string
+  colors?: string[]
+  labels?: string[]
+  subtitle?: string
+  text?: string
+  value_label?: string // e.g., "Transactions", "Amount", "Count", "STX"
+  tooltip_data?: {
+    [key: string]: {
+      value: number
+      info?: string
+      additionalMetrics?: Record<string, string | number>
+    }
+  }
+}
+
 export interface ChatMessage {
   id: string
   role: 'user' | 'assistant'
   content: string
   timestamp: number
+  graphData?: GraphData
 }

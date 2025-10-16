@@ -408,7 +408,7 @@ ${detailedTransactions.slice(0, 15)}`
 
   const agentInstructions = agentMode ? `
 
-🤖 AGENT MODE - YOU CONTROL DATA FETCHING:
+🤖 AGENT MODE - YOU CONTROL DATA FETCHING & VISUAL ANALYTICS:
 
 CURRENT CONTEXT: You have ${walletData.transactions.length} recent transactions out of ${walletData.totalTransactions || 'many'} total transactions.
 
@@ -454,13 +454,22 @@ FILE FORMAT (aggregated_transactions.json):
 - Each batch: {limit: 50, offset: 0, total: 15595, results: [transactions...]}
 - Each transaction: {tx_id, tx_type, sender_address, token_transfer?: {recipient_address, amount, memo}, ...}
 
-CODE TEMPLATE (copy this EXACTLY - pay attention to || operators):
+CODE TEMPLATE FOR GRAPHS (copy this EXACTLY - pay attention to || operators):
 const fs = require('fs');
 const fileData = JSON.parse(fs.readFileSync('aggregated_transactions.json', 'utf8'));
 const data = fileData.data || fileData;
 const allTransactions = data.flatMap(batch => batch.results || []);
-// Your analysis logic here
-console.log(JSON.stringify(yourResult));
+// Your analysis logic here to prepare graph data
+const graphResult = {
+  graph: "VBC", // or HBC, PG, LC, AC, DG
+  x_axis_data: ["Label1", "Label2", "Label3"],
+  y_axis_data: [100, 200, 150],
+  title: "Chart Title",
+  subtitle: "Optional subtitle",
+  colors: ["#3b82f6", "#8b5cf6", "#ec4899"],
+  text: "Explanation of the data and insights"
+};
+console.log(JSON.stringify(graphResult));
 
 CRITICAL SYNTAX RULES:
 - Always use || (double pipe) for OR operations
@@ -484,11 +493,20 @@ EXAMPLES:
 - For "more details": {"action": "use_agent", "uri": "https://api.testnet.hiro.so/extended/v1/address/${walletData.address}", "uri_data": null}
 
 **Flash Agent Mode:**
-- For "how much STX did ST1ABC... received": {"action": "use_agent", "uri": "https://api.testnet.hiro.so/extended/v1/address/${walletData.address}/transactions", "uri_data": null, "recursive": true, "regex": "/\\bST1ABC[A-Z0-9]+\\b/"}
+- For searching specific addresses: Use recursive mode with regex pattern to find transactions
+- For finding specific transaction patterns: Use regex to match transaction characteristics
 
-**Pro Agent Mode:**
-- For "list all receiver addresses": {"action": "use_agent", "uri": "https://api.testnet.hiro.so/extended/v1/address/${walletData.address}/transactions", "uri_data": null, "recursive": true, "code": "const fs = require('fs'); const fileData = JSON.parse(fs.readFileSync('aggregated_transactions.json', 'utf8')); const data = fileData.data || fileData; const allTransactions = data.flatMap(batch => batch.results || []); const receivers = [...new Set(allTransactions.filter(tx => tx.token_transfer).map(tx => tx.token_transfer.recipient_address))]; console.log(JSON.stringify({receivers, count: receivers.length}));"}
-- For "transaction counts per address": {"action": "use_agent", "uri": "https://api.testnet.hiro.so/extended/v1/address/${walletData.address}/transactions", "uri_data": null, "recursive": true, "code": "const fs = require('fs'); const fileData = JSON.parse(fs.readFileSync('aggregated_transactions.json', 'utf8')); const data = fileData.data || fileData; const allTransactions = data.flatMap(batch => batch.results || []); const counts = {}; allTransactions.filter(tx => tx.token_transfer).forEach(tx => { const addr = tx.token_transfer.recipient_address; counts[addr] = (counts[addr] || 0) + 1; }); console.log(JSON.stringify(counts));"}
+**Pro Agent Mode for Graphs:**
+- Monthly activity chart: Use Pro Agent Mode with code to process all transactions by month
+- Transaction type pie chart: Use Pro Agent Mode with code to count transaction types  
+- Top recipients bar chart: Use Pro Agent Mode with code to analyze recipient addresses
+- Balance trend line chart: Use Pro Agent Mode with code to calculate balance over time
+
+**Graph Code Examples:**
+For monthly activity: Process transactions by month, create VBC with months as x_axis_data
+For transaction types: Count tx_type values, create PG with types as x_axis_data
+For top recipients: Count recipient addresses, create HBC with top addresses as x_axis_data
+For balance trends: Calculate cumulative balance changes, create LC with dates as x_axis_data
 
 WHEN TO USE FLASH AGENT MODE:
 - Questions about specific addresses that aren't in current context (like "how much did ADDRESS receive")
@@ -501,6 +519,165 @@ WHEN TO USE PRO AGENT MODE:
 - Complex data aggregation, counting, or statistical analysis
 - When you need to process entire transaction history with custom logic
 - Questions like "total amounts sent to each address", "transaction patterns", "unique recipients"
+
+📊 VISUAL ANALYTICS - GRAPH & DIAGRAM SYSTEM:
+
+When users ask for graphs, diagrams, charts, or visual analytics, you can create beautiful visualizations using our graph system.
+
+AVAILABLE GRAPH TYPES:
+- **HBC** (Horizontal Bar Chart): Perfect for comparing categories, top addresses, contract usage
+- **VBC** (Vertical Bar Chart): Great for time series, monthly data, transaction counts
+- **PG** (Pie Chart): Ideal for showing proportions, transaction type breakdown, percentage distributions
+- **LC** (Line Chart): Best for trends over time, balance changes, activity patterns
+- **AC** (Area Chart): Similar to line chart but with filled area, good for cumulative data
+- **DG** (Donut Chart): Like pie chart but with center space, modern look for proportions
+
+GRAPH PROTOCOL FORMAT:
+{
+  "graph": "HBC|VBC|PG|LC|AC|DG",
+  "x_axis_data": ["Label1", "Label2", "Label3"],
+  "y_axis_data": [100, 200, 150],
+  "title": "Chart Title",
+  "subtitle": "Optional subtitle",
+  "colors": ["#3b82f6", "#8b5cf6", "#ec4899"],
+  "value_label": "Transactions", // Dynamic label: "Transactions", "Amount", "STX", "Count", etc.
+  "text": "Optional explanation text to show below the graph",
+  "tooltip_data": {
+    "Label1": {"value": 100, "info": "Additional context for Label1"},
+    "Label2": {"value": 200, "info": "Additional context for Label2"},
+    "Label3": {"value": 150, "info": "Additional context for Label3"}
+  }
+}
+
+GRAPH PROTOCOL RULES:
+1. **x_axis_data**: Array of labels (strings) - categories, dates, addresses, etc.
+2. **y_axis_data**: Array of numbers - values corresponding to each x_axis label
+3. **title**: Clear, descriptive title for the graph
+4. **subtitle**: Optional additional context
+5. **colors**: Optional array of hex colors. If not provided, uses default gradient colors
+6. **value_label**: Dynamic label for tooltip values - "Transactions", "STX", "Amount", "Count", etc.
+7. **text**: Optional text explanation to accompany the graph
+
+COLOR SUGGESTIONS:
+- Blue theme: ["#3b82f6", "#1d4ed8", "#60a5fa"]
+- Purple theme: ["#8b5cf6", "#7c3aed", "#a78bfa"]
+- Multi-color: ["#3b82f6", "#8b5cf6", "#ec4899", "#10b981", "#f59e0b"]
+- Stacks theme: ["#5546ff", "#00d4ff", "#ff6b35"]
+
+WHEN TO USE GRAPHS:
+- User asks for "chart", "graph", "diagram", "visual", "show me"
+- Questions about trends, comparisons, distributions, patterns
+- Time-based analysis (monthly, daily, etc.)
+- Top/bottom lists (most active addresses, highest amounts)
+- Breakdown analysis (transaction types, contract usage)
+
+CRITICAL GRAPH WORKFLOW - FOLLOW THIS EXACTLY:
+
+**STEP 1 - DATA COLLECTION (ALWAYS FIRST):**
+When user asks for graphs/charts/diagrams, you MUST ALWAYS use Pro Agent Mode FIRST to collect comprehensive data:
+
+{"action": "use_agent", "uri": "https://api.testnet.hiro.so/extended/v1/address/WALLET_ADDRESS/transactions", "uri_data": null, "recursive": true, "code": "JAVASCRIPT_CODE_TO_PROCESS_DATA_AND_PREPARE_GRAPH_DATA"}
+
+**STEP 2 - GRAPH GENERATION (ONLY AFTER STEP 1):**
+ONLY after Pro Agent Mode completes and you have the processed data, THEN respond with graph protocol:
+
+{
+  "graph": "VBC|HBC|PG|LC|AC|DG",
+  "x_axis_data": ["Label1", "Label2"],
+  "y_axis_data": [100, 200],
+  "title": "Chart Title",
+  "text": "Explanation text"
+}
+
+**NEVER SKIP STEP 1 - ALWAYS USE PRO AGENT MODE FIRST FOR GRAPHS**
+
+**IMPORTANT: DO NOT RESPOND WITH GRAPH PROTOCOL IMMEDIATELY**
+When user asks for graphs/charts/diagrams, you MUST respond with Pro Agent Mode JSON ONLY. The system will then execute your code and call you again with the results, at which point you can generate the graph protocol.
+
+Example Complete Workflow:
+User: "Show me October activities with a chart"
+
+Your FIRST Response (Pro Agent Mode ONLY):
+Use Pro Agent Mode with recursive code execution to process all transaction data and generate graph result object. The code should filter transactions by date range, aggregate the data, and create a complete graph object with all required fields including graph type, axis data, title, colors, and explanatory text.
+
+GRAPH EXAMPLES:
+
+**Monthly Transaction Count (VBC):**
+{
+  "graph": "VBC",
+  "x_axis_data": ["Jan", "Feb", "Mar", "Apr", "May"],
+  "y_axis_data": [45, 67, 23, 89, 34],
+  "title": "Monthly Transaction Activity",
+  "value_label": "Transactions",
+  "colors": ["#3b82f6", "#1d4ed8", "#60a5fa", "#93c5fd", "#dbeafe"],
+  "text": "Peak activity was in April with 89 transactions. Overall trend shows variable monthly usage."
+}
+
+**Transaction Type Breakdown (PG):**
+{
+  "graph": "PG",
+  "x_axis_data": ["Token Transfer", "Contract Call", "Smart Contract"],
+  "y_axis_data": [150, 45, 5],
+  "title": "Transaction Type Distribution",
+  "value_label": "Transactions",
+  "colors": ["#10b981", "#f59e0b", "#ef4444"],
+  "text": "Token transfers dominate at 75% of all transactions, indicating active STX movement.",
+  "tooltip_data": {
+    "Token Transfer": {"value": 150, "info": "Standard STX transfers between addresses", "additionalMetrics": {"avg_amount": "1.2M STX", "success_rate": "98.7%"}},
+    "Contract Call": {"value": 45, "info": "Smart contract function calls", "additionalMetrics": {"gas_used": "45K", "success_rate": "95.6%"}},
+    "Smart Contract": {"value": 5, "info": "Contract deployments", "additionalMetrics": {"contracts_deployed": 5, "success_rate": "100%"}}
+  }
+}
+
+**Top Recipients (HBC):**
+{
+  "graph": "HBC",
+  "x_axis_data": ["ST1ABC...DEF", "ST2GHI...JKL", "ST3MNO...PQR"],
+  "y_axis_data": [25, 18, 12],
+  "title": "Top STX Recipients",
+  "subtitle": "By transaction count",
+  "colors": ["#8b5cf6", "#a78bfa", "#c4b5fd"],
+  "text": "ST1ABC...DEF received the most transactions (25), suggesting it might be an exchange or service address."
+}
+
+**Balance Trend (LC):**
+{
+  "graph": "LC",
+  "x_axis_data": ["Week 1", "Week 2", "Week 3", "Week 4"],
+  "y_axis_data": [1000, 1200, 950, 1100],
+  "title": "STX Balance Over Time",
+  "value_label": "STX",
+  "colors": ["#06b6d4", "#0891b2"],
+  "text": "Balance shows volatility with a dip in week 3, possibly due to a large transaction or contract interaction."
+}
+
+IMPORTANT GRAPH RULES:
+- Arrays must have same length: x_axis_data.length === y_axis_data.length
+- Use meaningful, short labels for x_axis_data
+- Round numbers appropriately for y_axis_data
+- Choose appropriate graph type for the data
+- Always include descriptive title
+- Use "text" field to provide insights about the data
+- For addresses, truncate to first 6 and last 3 characters: "ST1ABC...XYZ"
+
+VALUE LABEL GUIDELINES:
+- For transaction counts: "Transactions"
+- For STX amounts: "STX" 
+- For USD values: "USD"
+- For percentages: "Percentage"
+- For generic counts: "Count"
+- For time periods: "Days", "Hours", "Minutes"
+- For addresses: "Addresses"
+- For contracts: "Contracts"
+
+**CRITICAL WORKFLOW REMINDER:**
+1. User asks for graph/chart/diagram
+2. You respond with Pro Agent Mode JSON (with graph data in the result)
+3. System executes your code and gets the graph data
+4. System automatically returns the graph protocol to display the chart
+5. User sees beautiful animated graph with your analysis
+
+**DO NOT RESPOND WITH GRAPH PROTOCOL DIRECTLY - ALWAYS USE PRO AGENT MODE FIRST**
 
 REMEMBER: Return ONLY the JSON, no other text. The decision is yours - use our agent to get better data and serve users better.` : ''
 
@@ -581,6 +758,21 @@ Give straight forward answer`
       .replace(/\s+/g, ' ') // Normalize whitespace
       .trim()
 
+    // Check if the response is a graph protocol
+    if (cleanContent.includes('"graph"') && cleanContent.includes('"x_axis_data"') && cleanContent.includes('"y_axis_data"')) {
+      try {
+        // Validate that it's proper JSON
+        const graphData = JSON.parse(cleanContent)
+        if (graphData.graph && graphData.x_axis_data && graphData.y_axis_data && graphData.title) {
+          console.log('Graph protocol detected:', graphData)
+          return cleanContent // Return the JSON as-is for the frontend to parse
+        }
+      } catch (error) {
+        console.log('Graph protocol parsing failed:', error)
+        // Continue with normal processing
+      }
+    }
+
     // If agent mode is on and the AI says it can't answer, try to provide a helpful response
     if (agentMode && (cleanContent.includes("cannot answer") || cleanContent.includes("apologize"))) {
       // Check if this is a question about recipients/senders that we might be able to answer
@@ -614,125 +806,125 @@ Give straight forward answer`
 const apiCache = new Map<string, unknown>()
 
 // Global preloading state to sync background and Pro Agent requests
-const preloadingState = new Map<string, Promise<{totalBatches: number, totalTransactions: number, cached: boolean}>>()
+const preloadingState = new Map<string, Promise<{ totalBatches: number, totalTransactions: number, cached: boolean }>>()
 
 // Background transaction data preloading for Pro Agent Mode
-export async function preloadTransactionData(walletData: WalletData): Promise<{totalBatches: number, totalTransactions: number, cached: boolean}> {
+export async function preloadTransactionData(walletData: WalletData): Promise<{ totalBatches: number, totalTransactions: number, cached: boolean }> {
   const address = walletData.address
-  
+
   // Check if preloading is already in progress for this address
   if (preloadingState.has(address)) {
     console.log('🔄 Preloading already in progress for:', address)
     return await preloadingState.get(address)!
   }
-  
+
   console.log('🚀 Starting background transaction preload for:', address)
-  
+
   // Create and store the preloading promise
   const preloadPromise = (async () => {
     const baseUri = `https://api.testnet.hiro.so/extended/v1/address/${walletData.address}/transactions`
     const totalTransactions = walletData.totalTransactions || 1000
-  
-  const fs = await import('fs')
-  const aggregatedFilePath = 'aggregated_transactions.json'
-  
-  // Check if we already have complete data for this address
-  if (fs.existsSync(aggregatedFilePath)) {
-    try {
-      const existingDataRaw = fs.readFileSync(aggregatedFilePath, 'utf8')
-      const existingData = JSON.parse(existingDataRaw)
-      
-      // Check if data has metadata (new format) or is legacy format
-      if (existingData._metadata && existingData.data) {
-        // New format with metadata
-        const metadata = existingData._metadata
-        if (metadata.address === walletData.address && metadata.totalTransactions === totalTransactions) {
-          console.log(`✅ Complete cached data already exists for ${walletData.address}`)
-          return {
-            totalBatches: metadata.batches,
-            totalTransactions: metadata.totalTransactions,
-            cached: true
+
+    const fs = await import('fs')
+    const aggregatedFilePath = 'aggregated_transactions.json'
+
+    // Check if we already have complete data for this address
+    if (fs.existsSync(aggregatedFilePath)) {
+      try {
+        const existingDataRaw = fs.readFileSync(aggregatedFilePath, 'utf8')
+        const existingData = JSON.parse(existingDataRaw)
+
+        // Check if data has metadata (new format) or is legacy format
+        if (existingData._metadata && existingData.data) {
+          // New format with metadata
+          const metadata = existingData._metadata
+          if (metadata.address === walletData.address && metadata.totalTransactions === totalTransactions) {
+            console.log(`✅ Complete cached data already exists for ${walletData.address}`)
+            return {
+              totalBatches: metadata.batches,
+              totalTransactions: metadata.totalTransactions,
+              cached: true
+            }
           }
         }
+      } catch (error) {
+        console.log('⚠️ Error reading existing data, will fetch fresh:', error)
       }
-    } catch (error) {
-      console.log('⚠️ Error reading existing data, will fetch fresh:', error)
     }
-  }
-  
-  // Fetch all transactions in background
-  console.log('📡 Background fetching ALL transactions...')
-  
-  const limit = 50
-  const maxConcurrent = 5
-  let offset = 0
-  const allTransactionData: unknown[] = []
-  
-  // Fetch all transactions in batches
-  while (offset < totalTransactions) {
-    const batch = []
-    for (let i = 0; i < maxConcurrent && offset + (i * limit) < totalTransactions; i++) {
-      const currentOffset = offset + (i * limit)
-      const url = `${baseUri}?limit=${limit}&offset=${currentOffset}`
-      
-      batch.push(
-        fetch(url)
-          .then(response => response.json())
-          .then(data => data)
-          .catch(error => {
-            console.error(`Error fetching offset ${currentOffset}:`, error)
-            return null
-          })
-      )
+
+    // Fetch all transactions in background
+    console.log('📡 Background fetching ALL transactions...')
+
+    const limit = 50
+    const maxConcurrent = 5
+    let offset = 0
+    const allTransactionData: unknown[] = []
+
+    // Fetch all transactions in batches
+    while (offset < totalTransactions) {
+      const batch = []
+      for (let i = 0; i < maxConcurrent && offset + (i * limit) < totalTransactions; i++) {
+        const currentOffset = offset + (i * limit)
+        const url = `${baseUri}?limit=${limit}&offset=${currentOffset}`
+
+        batch.push(
+          fetch(url)
+            .then(response => response.json())
+            .then(data => data)
+            .catch(error => {
+              console.error(`Error fetching offset ${currentOffset}:`, error)
+              return null
+            })
+        )
+      }
+
+      const results = await Promise.all(batch)
+      allTransactionData.push(...results.filter(Boolean))
+
+      offset += maxConcurrent * limit
+
+      // Add small delay to avoid overwhelming the API
+      if (offset < totalTransactions) {
+        await new Promise(resolve => setTimeout(resolve, 200)) // Increased delay to avoid rate limits
+      }
+
+      // Log progress
+      const progress = Math.min(100, (offset / totalTransactions) * 100)
+      console.log(`📊 Background preload progress: ${progress.toFixed(1)}% (${offset}/${totalTransactions})`)
     }
-    
-    const results = await Promise.all(batch)
-    allTransactionData.push(...results.filter(Boolean))
-    
-    offset += maxConcurrent * limit
-    
-    // Add small delay to avoid overwhelming the API
-    if (offset < totalTransactions) {
-      await new Promise(resolve => setTimeout(resolve, 200)) // Increased delay to avoid rate limits
+
+    console.log(`✅ Background preload complete: ${allTransactionData.length} batches`)
+
+    // Save aggregated data with metadata
+    const dataWithMetadata = {
+      _metadata: {
+        address: walletData.address,
+        totalTransactions: totalTransactions,
+        fetchedAt: new Date().toISOString(),
+        batches: allTransactionData.length
+      },
+      data: allTransactionData
     }
-    
-    // Log progress
-    const progress = Math.min(100, (offset / totalTransactions) * 100)
-    console.log(`📊 Background preload progress: ${progress.toFixed(1)}% (${offset}/${totalTransactions})`)
-  }
-  
-  console.log(`✅ Background preload complete: ${allTransactionData.length} batches`)
-  
-  // Save aggregated data with metadata
-  const dataWithMetadata = {
-    _metadata: {
-      address: walletData.address,
-      totalTransactions: totalTransactions,
-      fetchedAt: new Date().toISOString(),
-      batches: allTransactionData.length
-    },
-    data: allTransactionData
-  }
-  
-  // Clean the file first
-  if (fs.existsSync(aggregatedFilePath)) {
-    fs.unlinkSync(aggregatedFilePath)
-  }
-  
-  // Write aggregated data
-  fs.writeFileSync(aggregatedFilePath, JSON.stringify(dataWithMetadata, null, 2))
-  console.log(`💾 Background preload saved to ${aggregatedFilePath}`)
-  
+
+    // Clean the file first
+    if (fs.existsSync(aggregatedFilePath)) {
+      fs.unlinkSync(aggregatedFilePath)
+    }
+
+    // Write aggregated data
+    fs.writeFileSync(aggregatedFilePath, JSON.stringify(dataWithMetadata, null, 2))
+    console.log(`💾 Background preload saved to ${aggregatedFilePath}`)
+
     return {
       totalBatches: allTransactionData.length,
       totalTransactions: totalTransactions,
       cached: false
     }
   })()
-  
+
   // Store the promise in global state
   preloadingState.set(address, preloadPromise)
-  
+
   try {
     const result = await preloadPromise
     return result
@@ -759,38 +951,38 @@ async function executeProAgentMode(baseUri: string, code: string, totalTransacti
     try {
       await preloadingState.get(currentAddress)
       console.log('✅ Background preloading completed, using cached data')
-      
+
       // After background preload completes, we should have the data cached
       // Skip the manual fetching and go straight to code execution
       let totalBatches = 0
       try {
         const existingDataRaw = fs.readFileSync(aggregatedFilePath, 'utf8')
         const existingData = JSON.parse(existingDataRaw)
-        
+
         if (existingData._metadata && existingData.data) {
           totalBatches = existingData._metadata.batches
         } else if (Array.isArray(existingData)) {
           totalBatches = existingData.length
         }
-        
+
         console.log('🚀 Using background preloaded data, skipping fetch')
-        
+
         // Execute the provided code directly
         console.log('⚡ Executing user code...')
         const { exec } = await import('child_process')
-        
+
         const scriptPath = 'temp_analysis_script.js'
         fs.writeFileSync(scriptPath, code)
-        
+
         return new Promise((resolve) => {
           exec(`node ${scriptPath}`, (error: Error | null, stdout: string, stderr: string) => {
             if (fs.existsSync(scriptPath)) {
               fs.unlinkSync(scriptPath)
             }
-            
+
             if (error) {
               console.error(`Code execution error (attempt ${currentAttempt}/${maxRetries}):`, error)
-              
+
               if (currentAttempt < maxRetries) {
                 console.log('🔄 Attempting to fix code with AI...')
                 resolve({
@@ -831,7 +1023,7 @@ async function executeProAgentMode(baseUri: string, code: string, totalTransacti
               } catch {
                 result = stdout
               }
-              
+
               resolve({
                 _proAgent: {
                   success: true,
@@ -843,7 +1035,7 @@ async function executeProAgentMode(baseUri: string, code: string, totalTransacti
             }
           })
         })
-        
+
       } catch (fileError) {
         console.log('⚠️ Could not read cached data after background preload:', fileError)
       }
@@ -854,7 +1046,7 @@ async function executeProAgentMode(baseUri: string, code: string, totalTransacti
 
   // Check if we already have complete data for this address
   let useExistingData = false
-  
+
   // If background preloading was in progress, we should now have cached data
   if (fs.existsSync(aggregatedFilePath) && currentAddress) {
     try {
@@ -917,7 +1109,7 @@ async function executeProAgentMode(baseUri: string, code: string, totalTransacti
         }
       }
     }
-    
+
     console.log('🔄 Fetching ALL transactions...')
 
     const limit = 50
@@ -1458,6 +1650,17 @@ Answer the user's question directly and concisely. If they ask for a specific pi
 
     const cleanContent = content.replace(/\*\*\*+/g, '**').replace(/---+/g, '').replace(/#{4,}/g, '###').replace(/\|+/g, '').replace(/\s+/g, ' ').trim()
 
+    // Check if Pro Agent result contains graph data and return it as graph protocol
+    if (isProAgent && proAgentInfo?.success && proAgentInfo.result) {
+      const result = proAgentInfo.result as Record<string, unknown>
+
+      // Check if the result contains graph protocol data
+      if (result.graph && result.x_axis_data && result.y_axis_data && result.title) {
+        console.log('🎨 Pro Agent result contains graph data, returning graph protocol')
+        return JSON.stringify(result)
+      }
+    }
+
     // If the AI still says it can't answer, provide a manual analysis
     if (cleanContent.includes('cannot') || cleanContent.includes('apologize') || cleanContent.includes('unable') || cleanContent.length < 50) {
       console.log('AI response inadequate, providing manual analysis')
@@ -1469,7 +1672,7 @@ Answer the user's question directly and concisely. If they ask for a specific pi
         const proData = apiData as ProAgentResponse
         if (proData._proAgent?.success && proData._proAgent.result) {
           console.log('Pro Agent has successful result, retrying AI with clearer context...')
-          
+
           // Retry with AI using a much clearer context about the Pro Agent result
           const retryContext = `IMPORTANT: Pro Agent Mode successfully analyzed ALL transaction data and found the answer.
 
@@ -1489,7 +1692,7 @@ Please provide a clear answer to "${originalQuestion}" based on the Pro Agent re
 
           try {
             console.log('🔄 Retrying AI with Pro Agent result context...')
-            
+
             const retryMessages = [
               {
                 role: 'system' as const,
@@ -1508,7 +1711,7 @@ Please provide a clear answer to "${originalQuestion}" based on the Pro Agent re
             }, authKey)
 
             const retryContent = retryResponse.choices?.[0]?.message?.content?.trim()
-            
+
             if (retryContent && retryContent.length > 50 && !retryContent.includes('cannot') && !retryContent.includes('unable')) {
               console.log('✅ AI retry successful with Pro Agent context')
               return retryContent.replace(/\*\*\*+/g, '**').replace(/---+/g, '').replace(/#{4,}/g, '###').replace(/\|+/g, '').replace(/\s+/g, ' ').trim()
@@ -1518,7 +1721,7 @@ Please provide a clear answer to "${originalQuestion}" based on the Pro Agent re
           } catch (retryError) {
             console.error('AI retry failed:', retryError)
           }
-          
+
           // If AI retry failed, fall back to manual interpretation
           const result = proData._proAgent.result as Record<string, unknown>
 
@@ -1528,7 +1731,7 @@ Please provide a clear answer to "${originalQuestion}" based on the Pro Agent re
               return `The address that received the most STX from this wallet is:\n\n**${result.topRecipient}**\n\nTotal amount: **${result.totalAmountSTX.toLocaleString()} STX**`
             }
           }
-          
+
           if (originalQuestion.toLowerCase().includes('lowest') && (originalQuestion.toLowerCase().includes('receive') || originalQuestion.toLowerCase().includes('stx'))) {
             if (result.address && result.total_amount) {
               const amountSTX = (result.total_amount as number) / 1000000

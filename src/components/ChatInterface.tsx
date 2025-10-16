@@ -3,8 +3,9 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Send, Bot, User, Loader2, Zap, ToggleLeft, ToggleRight } from 'lucide-react'
-import { ChatMessage } from '@/types/stacks'
+import { ChatMessage, GraphData } from '@/types/stacks'
 import { cn } from '@/lib/utils'
+import GraphRenderer from './GraphRenderer'
 
 // Simple markdown renderer for chat messages
 const renderChatMessage = (content: string) => {
@@ -84,9 +85,10 @@ interface ChatInterfaceProps {
   disabled?: boolean
   messages: ChatMessage[]
   setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>
+  onGraphExpand?: (graphData: GraphData) => void
 }
 
-export default function ChatInterface({ onSendMessage, disabled, messages, setMessages }: ChatInterfaceProps) {
+export default function ChatInterface({ onSendMessage, disabled, messages, setMessages, onGraphExpand }: ChatInterfaceProps) {
   // Initialize with welcome message if no messages exist
   useEffect(() => {
     if (messages.length === 0) {
@@ -132,7 +134,15 @@ export default function ChatInterface({ onSendMessage, disabled, messages, setMe
     try {
       const response = await onSendMessage(input.trim(), agentMode)
       
-      // Check if response is an agent action
+      console.log('=== CHAT INTERFACE DEBUG ===')
+      console.log('Agent Mode:', agentMode)
+      console.log('Response:', response)
+      console.log('Contains "graph":', response.includes('"graph"'))
+      console.log('Contains "x_axis_data":', response.includes('"x_axis_data"'))
+      console.log('Contains "action":', response.includes('"action"'))
+      console.log('============================')
+      
+      // Check if response is an agent action or graph request
       if (agentMode && (response.includes('"action"') || response.includes('use_agent'))) {
         console.log('Agent response detected:', response)
         
@@ -147,13 +157,58 @@ export default function ChatInterface({ onSendMessage, disabled, messages, setMe
         try {
           // Parse and execute agent action
           const agentResponse = await onSendMessage(`AGENT_EXECUTE:${response}:${input.trim()}`, true)
-          const assistantMessage: ChatMessage = {
-            id: (Date.now() + 1).toString(),
-            role: 'assistant',
-            content: agentResponse,
-            timestamp: Date.now()
+          
+          console.log('=== AGENT RESPONSE DEBUG ===')
+          console.log('Agent Response:', agentResponse)
+          console.log('Contains "graph":', agentResponse.includes('"graph"'))
+          console.log('Contains "x_axis_data":', agentResponse.includes('"x_axis_data"'))
+          console.log('============================')
+          
+          // Check if agent response is a graph protocol
+          if (agentResponse.includes('"graph"') && agentResponse.includes('"x_axis_data"')) {
+            try {
+              const graphData = JSON.parse(agentResponse.trim())
+              console.log('Agent returned graph data:', graphData)
+              
+              if (graphData.graph && graphData.x_axis_data && graphData.y_axis_data && graphData.title) {
+                const assistantMessage: ChatMessage = {
+                  id: (Date.now() + 1).toString(),
+                  role: 'assistant',
+                  content: graphData.text || 'Graph generated successfully',
+                  timestamp: Date.now(),
+                  graphData: graphData
+                }
+                setMessages(prev => [...prev, assistantMessage])
+                console.log('Agent graph message added to chat')
+              } else {
+                console.log('Invalid agent graph data structure:', graphData)
+                const assistantMessage: ChatMessage = {
+                  id: (Date.now() + 1).toString(),
+                  role: 'assistant',
+                  content: agentResponse,
+                  timestamp: Date.now()
+                }
+                setMessages(prev => [...prev, assistantMessage])
+              }
+            } catch (error) {
+              console.error('Agent graph parsing error:', error)
+              const assistantMessage: ChatMessage = {
+                id: (Date.now() + 1).toString(),
+                role: 'assistant',
+                content: agentResponse,
+                timestamp: Date.now()
+              }
+              setMessages(prev => [...prev, assistantMessage])
+            }
+          } else {
+            const assistantMessage: ChatMessage = {
+              id: (Date.now() + 1).toString(),
+              role: 'assistant',
+              content: agentResponse,
+              timestamp: Date.now()
+            }
+            setMessages(prev => [...prev, assistantMessage])
           }
-          setMessages(prev => [...prev, assistantMessage])
         } catch (error) {
           console.error('Agent execution error:', error)
           const errorMessage: ChatMessage = {
@@ -167,6 +222,44 @@ export default function ChatInterface({ onSendMessage, disabled, messages, setMe
           setAgentLoading(false)
           setFlashAgentMode(false)
           setProAgentMode(false)
+        }
+      } else if (response.includes('"graph"') && response.includes('"x_axis_data"')) {
+        // Handle graph response
+        console.log('Graph response detected:', response)
+        try {
+          const graphData = JSON.parse(response.trim())
+          console.log('Parsed graph data:', graphData)
+          
+          // Validate that it's a proper graph object
+          if (graphData.graph && graphData.x_axis_data && graphData.y_axis_data && graphData.title) {
+            const assistantMessage: ChatMessage = {
+              id: (Date.now() + 1).toString(),
+              role: 'assistant',
+              content: graphData.text || 'Graph generated successfully',
+              timestamp: Date.now(),
+              graphData: graphData
+            }
+            setMessages(prev => [...prev, assistantMessage])
+            console.log('Graph message added to chat')
+          } else {
+            console.log('Invalid graph data structure:', graphData)
+            const assistantMessage: ChatMessage = {
+              id: (Date.now() + 1).toString(),
+              role: 'assistant',
+              content: response,
+              timestamp: Date.now()
+            }
+            setMessages(prev => [...prev, assistantMessage])
+          }
+        } catch (error) {
+          console.error('Graph parsing error:', error)
+          const assistantMessage: ChatMessage = {
+            id: (Date.now() + 1).toString(),
+            role: 'assistant',
+            content: response,
+            timestamp: Date.now()
+          }
+          setMessages(prev => [...prev, assistantMessage])
         }
       } else {
         const assistantMessage: ChatMessage = {
@@ -278,17 +371,41 @@ export default function ChatInterface({ onSendMessage, disabled, messages, setMe
               )}
               
               <div className={cn(
-                "max-w-[280px] lg:max-w-sm px-4 py-3 rounded-2xl break-words overflow-hidden",
+                "max-w-[280px] lg:max-w-sm break-words overflow-hidden",
                 message.role === 'user'
-                  ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
-                  : "bg-gray-800/50 text-gray-100 border border-gray-700/30"
+                  ? "px-4 py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+                  : message.graphData 
+                    ? "w-full max-w-none" 
+                    : "px-4 py-3 rounded-2xl bg-gray-800/50 text-gray-100 border border-gray-700/30"
               )}>
-                <div className="text-sm leading-relaxed">
-                  {message.role === 'assistant' ? renderChatMessage(message.content) : message.content}
-                </div>
-                <p className="text-xs opacity-70 mt-2">
-                  {new Date(message.timestamp).toLocaleTimeString()}
-                </p>
+                {message.graphData ? (
+                  <div>
+                    <GraphRenderer 
+                      data={message.graphData} 
+                      isCompact={true}
+                      onClick={() => message.graphData && onGraphExpand?.(message.graphData)}
+                    />
+                    {message.graphData.text && (
+                      <div className="mt-4 px-4 py-3 rounded-2xl bg-gray-800/50 text-gray-100 border border-gray-700/30">
+                        <div className="text-sm leading-relaxed">
+                          {renderChatMessage(message.graphData.text)}
+                        </div>
+                        <p className="text-xs opacity-70 mt-2">
+                          {new Date(message.timestamp).toLocaleTimeString()}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div>
+                    <div className="text-sm leading-relaxed">
+                      {message.role === 'assistant' ? renderChatMessage(message.content) : message.content}
+                    </div>
+                    <p className="text-xs opacity-70 mt-2">
+                      {new Date(message.timestamp).toLocaleTimeString()}
+                    </p>
+                  </div>
+                )}
               </div>
 
               {message.role === 'user' && (

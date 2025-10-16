@@ -27,6 +27,8 @@ We built AI Wallet Insights to democratize blockchain analytics, making Stacks d
 
 **Three-Tier AI Agent System** - Our breakthrough architecture handles any complexity of blockchain analysis through intelligent agent orchestration
 
+**Interactive Visual Analytics** - Revolutionary graph protocol system that automatically generates beautiful, interactive charts from natural language requests
+
 **Conversational Analytics** - Transform complex blockchain queries into natural language conversations
 
 **Real-time Intelligence** - Instant analysis of wallet balances, transaction patterns, and behavioral insights
@@ -157,6 +159,177 @@ At the heart of our system is an innovative JSON-based protocol that enables AI 
 
 **Conflict Prevention**: Smart synchronization prevents multiple agents from fetching the same data simultaneously, avoiding API rate limits.
 
+## Visual Analytics System
+
+### Revolutionary Graph Protocol
+
+AI Wallet Insights introduces the world's first **Graph Protocol** - a JSON-based communication system that enables AI to automatically generate beautiful, interactive visualizations from natural language requests. This breakthrough technology transforms complex blockchain data into stunning charts and graphs with zero manual configuration.
+
+### How Visual Analytics Works
+
+1. **Natural Language Request**: User asks for a chart (e.g., "Show me monthly transaction activity with a graph")
+2. **AI Analysis**: AI determines what data is needed and selects the optimal visualization type
+3. **Pro Agent Mode Activation**: System fetches comprehensive blockchain data using our agent protocol
+4. **Graph Protocol Generation**: AI responds with structured JSON containing complete graph specifications
+5. **Interactive Rendering**: Frontend automatically creates beautiful, animated, interactive visualizations
+6. **Enhanced Interaction**: Users can hover for detailed tooltips and click to expand to full-screen view
+
+### Graph Protocol Format
+
+The Graph Protocol uses a sophisticated JSON structure that contains everything needed to create professional visualizations:
+
+```json
+{
+  "graph": "VBC",                           // Graph type identifier
+  "x_axis_data": ["Jan", "Feb", "Mar"],     // Category labels or time periods
+  "y_axis_data": [150, 200, 180],          // Numeric values for each category
+  "title": "Monthly Transaction Activity",   // Main chart title
+  "subtitle": "Transactions per month",      // Optional descriptive subtitle
+  "value_label": "Transactions",            // Dynamic tooltip label
+  "colors": ["#3b82f6", "#8b5cf6"],        // Custom color scheme
+  "text": "Peak activity in February...",     // AI-generated insights
+  "tooltip_data": {                         // Enhanced interactive information
+    "Jan": {
+      "value": 150,
+      "info": "Winter activity period",
+      "additionalMetrics": {
+        "success_rate": "98.7%",
+        "avg_amount": "1.2M STX",
+        "top_recipient": "ST1ABC...DEF"
+      }
+    }
+  }
+}
+```
+
+### Supported Visualization Types
+
+| Code | Graph Type | Best Use Cases | Example Requests |
+|------|------------|----------------|------------------|
+| **VBC** | Vertical Bar Chart | Time series, monthly data, transaction counts | "Show monthly activity", "Chart daily transactions" |
+| **HBC** | Horizontal Bar Chart | Rankings, top lists, comparisons | "Top recipients", "Highest transaction amounts" |
+| **PG** | Pie Chart | Proportions, percentages, distributions | "Transaction type breakdown", "Spending categories" |
+| **LC** | Line Chart | Trends over time, balance changes | "Balance over time", "Activity trends" |
+| **AC** | Area Chart | Cumulative data, volume over time | "Total volume trends", "Cumulative transactions" |
+| **DG** | Donut Chart | Proportions with center totals | "Distribution with summary", "Percentage breakdown" |
+
+### Interactive Features
+
+#### Smart Tooltips System
+- **Context-Aware Labels**: Displays "Transactions", "STX", "Amount" instead of generic "Value"
+- **Rich Information Display**: Shows value, percentage, additional metrics, and contextual information
+- **Visual Progress Indicators**: Color-coded progress bars showing percentage distributions
+- **Intelligent Positioning**: Tooltips automatically position themselves to stay within viewport bounds
+- **Enhanced Metrics**: Additional data like success rates, averages, and related information
+
+#### Multi-Level Viewing System
+- **Compact Chat Integration**: Small interactive graphs appear directly in chat conversations
+- **Click-to-Expand**: Any graph can be clicked to open in full-screen detailed view
+- **Visual Analytics Panel**: Persistent graph display in the main interface sidebar
+- **Professional Modal View**: Full-screen graphs with download, share, and data table features
+
+#### Advanced Animation System
+- **Smooth Entry Animations**: All graph elements animate in with staggered timing for visual appeal
+- **Interactive Hover Effects**: Elements brighten and scale on mouse interaction
+- **Loading State Animations**: Progressive data loading with visual feedback
+- **Responsive Transitions**: Smooth transitions between different graph states
+
+### Graph Generation Workflow
+
+#### Step 1: Request Analysis
+When a user asks for a visualization, the AI analyzes the request to determine:
+- What type of data is needed (transactions, balances, addresses, etc.)
+- What time period or scope is required
+- Which visualization type would be most effective
+- Whether additional data fetching is needed
+
+#### Step 2: Data Collection
+The system uses Pro Agent Mode to:
+- Fetch comprehensive blockchain data
+- Process and aggregate information using custom JavaScript code
+- Calculate percentages, trends, and statistical information
+- Prepare data in the exact format needed for visualization
+
+#### Step 3: Protocol Generation
+The AI creates a complete Graph Protocol JSON that includes:
+- Appropriate graph type selection based on data characteristics
+- Properly formatted axis data and labels
+- Meaningful titles and descriptions
+- Custom color schemes that match the data context
+- Enhanced tooltip information for interactivity
+
+#### Step 4: Interactive Rendering
+The frontend GraphRenderer component:
+- Parses the Graph Protocol JSON
+- Creates animated SVG or Canvas-based visualizations
+- Implements interactive tooltips with smart positioning
+- Adds hover effects and click-to-expand functionality
+- Ensures responsive design across all device sizes
+
+### Example Visual Analytics Requests
+
+#### Simple Requests
+```
+User: "Show me a chart of my monthly activity"
+AI: [Generates VBC showing transaction counts per month]
+
+User: "Create a pie chart of transaction types"  
+AI: [Generates PG showing distribution of transfers vs contract calls]
+
+User: "Draw a line chart of my balance over time"
+AI: [Generates LC showing balance changes across time periods]
+```
+
+#### Advanced Requests
+```
+User: "Give me October activities with a detailed breakdown and chart"
+AI: [Uses Pro Agent Mode to fetch October data, then generates comprehensive VBC with enhanced tooltips]
+
+User: "Show me a visual analysis of my top 10 recipients with amounts"
+AI: [Processes all transactions, calculates recipient totals, generates HBC with detailed metrics]
+
+User: "Create a trend analysis of my spending patterns over the last 6 months"
+AI: [Aggregates 6 months of data, generates AC showing cumulative spending with insights]
+```
+
+### Technical Implementation
+
+#### GraphRenderer Component
+The core visualization engine that handles:
+- **Multi-format Support**: Renders all 6 graph types with consistent styling
+- **Animation Management**: Smooth entry animations with staggered timing
+- **Interaction Handling**: Mouse events, hover effects, and click detection
+- **Responsive Design**: Automatic scaling and layout adjustment
+- **Tooltip Management**: Smart positioning and rich content display
+
+#### Graph Protocol Parser
+Intelligent parsing system that:
+- **Validates Protocol Structure**: Ensures all required fields are present
+- **Sanitizes Data**: Prevents NaN errors and handles edge cases
+- **Optimizes Performance**: Efficient rendering for large datasets
+- **Error Recovery**: Graceful fallbacks for malformed data
+
+#### Integration Architecture
+Seamless integration between:
+- **AI Service**: Generates Graph Protocol JSON responses
+- **Chat Interface**: Detects and renders graph protocols in conversations
+- **Agent System**: Fetches comprehensive data for complex visualizations
+- **UI Components**: Manages expanded views and interactive features
+
+### Visual Design Philosophy
+
+#### Professional Aesthetics
+- **Modern Color Palettes**: Carefully selected gradients and color schemes
+- **Clean Typography**: Readable labels and titles with proper hierarchy
+- **Smooth Animations**: Professional-grade transitions and effects
+- **Consistent Styling**: Unified design language across all graph types
+
+#### User Experience Focus
+- **Intuitive Interactions**: Natural hover and click behaviors
+- **Clear Information Hierarchy**: Important data prominently displayed
+- **Accessibility Compliance**: Proper contrast ratios and keyboard navigation
+- **Mobile Optimization**: Touch-friendly interactions and responsive layouts
+
 ## Technical Architecture
 
 **Frontend**: Next.js 15, React 19, TypeScript
@@ -238,6 +411,14 @@ At the heart of our system is an innovative JSON-based protocol that enables AI 
 - "How much total STX have I sent to each address?"
 - "What's my transaction pattern over time?"
 
+**Visual Analytics Questions**:
+- "Show me a chart of monthly transaction activity"
+- "Create a pie chart of my transaction types"
+- "Draw a bar graph of my top 10 recipients"
+- "Display my balance trend over time with a line chart"
+- "Generate a visual breakdown of my spending patterns"
+- "Show me October activities with a detailed graph"
+
 ### Demo Wallet Addresses
 
 Test the application with these Stacks testnet addresses:
@@ -255,18 +436,26 @@ src/
 │   │   ├── chat/route.ts             # AI chat and agent orchestration
 │   │   └── preload-transactions/     # Background data preloading
 │   ├── globals.css                   # Global styles and animations
-│   ├── layout.tsx                    # Application root layout
-│   └── page.tsx                      # Main application page
+│   ├── layout.tsx                    # Application root layout with PWA support
+│   └── page.tsx                      # Main application page with graph integration
 ├── components/
 │   ├── WalletInput.tsx               # Wallet address input component
 │   ├── WalletSummary.tsx             # Comprehensive wallet analytics
-│   └── ChatInterface.tsx             # AI chat with agent mode controls
+│   ├── ChatInterface.tsx             # AI chat with agent mode and graph detection
+│   ├── GraphRenderer.tsx             # Core graph rendering engine (6 graph types)
+│   ├── GraphDemo.tsx                 # Visual analytics panel with examples
+│   └── ExpandedGraphViewer.tsx       # Full-screen graph modal with enhanced features
 ├── lib/
 │   ├── stacks-api.ts                 # Stacks blockchain API integration
-│   ├── ai-service.ts                 # AI agent system and protocol handler
+│   ├── ai-service.ts                 # AI agent system and graph protocol handler
 │   └── utils.ts                      # Utility functions and formatters
 ├── types/
-│   └── stacks.ts                     # TypeScript interfaces for blockchain data
+│   └── stacks.ts                     # TypeScript interfaces (blockchain + graph data)
+├── public/
+│   ├── logo.svg                      # Application logo and branding
+│   ├── site.webmanifest              # PWA manifest for app installation
+│   ├── robots.txt                    # SEO optimization
+│   └── sitemap.xml                   # Search engine sitemap
 └── aggregated_transactions.json      # Cached transaction data for Pro Agent Mode
 ```
 
@@ -274,16 +463,39 @@ src/
 
 **ai-service.ts**: The core of our agent system, containing:
 - Three-tier agent mode logic
+- Graph Protocol generation and parsing
 - JSON protocol parser and executor
 - Background data preloading system
 - Recursive error correction mechanism
 - Conversation memory management
 
+**GraphRenderer.tsx**: Revolutionary visualization engine featuring:
+- Support for 6 different graph types (VBC, HBC, PG, LC, AC, DG)
+- Interactive tooltips with smart positioning
+- Smooth animations and hover effects
+- Responsive design and mobile optimization
+- Graph Protocol JSON parsing and validation
+
 **ChatInterface.tsx**: Advanced chat component featuring:
 - Agent mode toggle and status indicators
 - Real-time conversation with AI
+- Graph Protocol detection and rendering
 - Agent mode activation detection
 - Loading states for different agent types
+- Compact graph display with click-to-expand
+
+**ExpandedGraphViewer.tsx**: Full-screen graph modal providing:
+- Detailed graph visualization with enhanced features
+- Download and share functionality
+- Raw data tables and statistical analysis
+- Professional presentation mode
+- Graph metadata and insights display
+
+**GraphDemo.tsx**: Visual analytics panel featuring:
+- Interactive graph examples and tutorials
+- Live graph display from chat conversations
+- Graph type explanations and use cases
+- Example question suggestions
 
 **stacks-api.ts**: Blockchain integration layer providing:
 - Wallet data fetching from Stacks API

@@ -6,8 +6,10 @@ import { Zap, Github, ExternalLink, Settings, X, Key, Check, Eye, EyeOff, Brain,
 import WalletInput from '@/components/WalletInput'
 import WalletSummary from '@/components/WalletSummary'
 import ChatInterface from '@/components/ChatInterface'
+import GraphDemo from '@/components/GraphDemo'
+import ExpandedGraphViewer from '@/components/ExpandedGraphViewer'
 // Settings functionality will be inline
-import { WalletData } from '@/types/stacks'
+import { WalletData, GraphData } from '@/types/stacks'
 
 export default function Home() {
   const [walletData, setWalletData] = useState<WalletData | null>(null)
@@ -16,6 +18,7 @@ export default function Home() {
   const [error, setError] = useState<string>('')
   const [conversationHistory, setConversationHistory] = useState<Array<{role: 'user' | 'assistant', content: string}>>([])
   const [chatMessages, setChatMessages] = useState<Array<{id: string, role: 'user' | 'assistant', content: string, timestamp: number}>>([])
+  const [expandedGraph, setExpandedGraph] = useState<GraphData | null>(null)
 
   
   // Update conversation history when chat messages change
@@ -383,6 +386,7 @@ export default function Home() {
               {/* Left Panel - Wallet Summary */}
               <div className="lg:col-span-2 overflow-y-auto" style={{ minHeight: '532px', padding: '0 20px 10px' }}>
                 <WalletSummary walletData={walletData} aiSummary={aiSummary} />
+                <GraphDemo expandedGraph={expandedGraph} />
               </div>
 
               {/* Right Panel - Chat Interface */}
@@ -392,6 +396,7 @@ export default function Home() {
                   disabled={!walletData}
                   messages={chatMessages}
                   setMessages={setChatMessages}
+                  onGraphExpand={setExpandedGraph}
                 />
               </div>
             </div>
@@ -399,6 +404,11 @@ export default function Home() {
         </div>
       </main>
 
+      {/* Expanded Graph Viewer */}
+      <ExpandedGraphViewer 
+        graphData={expandedGraph}
+        onClose={() => setExpandedGraph(null)}
+      />
 
       {/* Settings Modal */}
       {showSettings && (
