@@ -8,6 +8,8 @@ Built for the **Stacks Vibe Coding Hackathon** - A groundbreaking application th
 
 ![AI Wallet Insights](https://img.shields.io/badge/Stacks-Hackathon-orange) ![Next.js](https://img.shields.io/badge/Next.js-15-black) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4-cyan)
 
+## 🎥 Demo Video
+[![Watch the demo](https://img.youtube.com/vi/e5y8bWaGx-Y/0.jpg)](https://youtu.be/e5y8bWaGx-Y)
 ## Project Overview
 
 AI Wallet Insights represents the future of blockchain analytics - where complex transaction data becomes as easy to understand as having a conversation. Instead of struggling with raw blockchain explorers or writing complex queries, users can simply ask questions in natural language and receive intelligent, contextual answers.
